@@ -18,6 +18,20 @@ rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets
 https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets/SuspenseTheater.js
 ```
 
+## 院线电影
+
+正在热映 / 即将上映 / 豆瓣 Top250，可切换分类，支持热度、发布时间、评分排序。
+
+**在 Rex 中添加（订阅链接，自动更新）：**
+
+```
+rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets/CinemaMovies.js
+```
+
+原始地址：`https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets/CinemaMovies.js`
+
+院线数据：豆瓣榜单（in_theaters / coming_soon / top250）为种子 + TMDB 严格匹配（片名或原名全等才收录），生成脚本 `scripts/update-cinema-movies-data.js` 输出 `data/douban_movie_data.json`，工作流 `.github/workflows/update-cinema-movies-data.yml` 每天 18:00 UTC 自动运行（失败自动重试 3 次）。
+
 ## 数据自动化
 
 - 数据来源：豆瓣豆列（迷雾剧场 / 白夜剧场 / X剧场）+ TMDB 精确匹配（片名全等 + 年份）。
@@ -33,3 +47,5 @@ https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets/SuspenseTheater.
 - Value：TMDB API Read Access Token（v4 令牌）
 
 不配置的话工作流会直接报错退出，不会写坏已有数据。
+
+院线电影工作流额外需要两个 secret（与 ForwardWidgets 仓库同名同值）：`DOUBAN_API_KEY`、`BASE_URL`。
