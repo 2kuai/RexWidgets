@@ -56,4 +56,4 @@ rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets
 
 不配置的话工作流会直接报错退出，不会写坏已有数据。
 
-院线电影工作流额外需要两个 secret（与 ForwardWidgets 仓库同名同值）：`DOUBAN_API_KEY`、`BASE_URL`。
+院线电影工作流额外需要一个 secret（与 ForwardWidgets 仓库同名同值）：`DOUBAN_API_KEY`。`BASE_URL` 无需配置，不配时脚本使用内置的豆瓣官方地址 `https://api.douban.com/v2/movie`（ForwardWidgets 本身也未配这个 secret）。
