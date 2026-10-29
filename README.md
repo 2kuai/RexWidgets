@@ -2,6 +2,14 @@
 
 Rex 播放器 Widget 模块仓库。
 
+## 模块合集（一键订阅全部）
+
+```
+rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/collection.rex
+```
+
+合集文件 `collection.rex` 包含下面全部模块（悬疑剧场、院线电影），在 Rex 中打开上面的链接即可一次添加，之后各模块随仓库自动更新。
+
 ## 悬疑剧场
 
 迷雾剧场 / 白夜剧场 / X剧场 悬疑剧集精选，可按「正在热播 / 即将上线」和剧场筛选，支持热度、发布时间、评分排序。
