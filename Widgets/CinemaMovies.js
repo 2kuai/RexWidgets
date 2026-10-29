@@ -1,7 +1,7 @@
 var WidgetMetadata = {
   id: "cinema_movies",
   title: "院线电影",
-  description: "正在热映 / 即将上映 / 豆瓣 Top250，数据每日自动更新",
+  description: "正在热映 / 即将上映，数据每日自动更新",
   author: "两块",
   site: "https://github.com/2kuai/RexWidgets",
   version: "1.0.0",
@@ -28,8 +28,7 @@ var WidgetMetadata = {
           type: "enumeration",
           enumOptions: [
             { title: "正在热映", value: "now_playing" },
-            { title: "即将上映", value: "coming_soon" },
-            { title: "经典影片", value: "top250" }
+            { title: "即将上映", value: "coming_soon" }
           ]
         },
         {

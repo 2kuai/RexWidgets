@@ -23,8 +23,7 @@ const GENRE_MAP = {
 // 分类：豆瓣端点 -> 输出字段
 const CATEGORIES = [
     { endpoint: 'in_theaters', key: 'now_playing', label: '正在热映' },
-    { endpoint: 'coming_soon', key: 'coming_soon', label: '即将上映' },
-    { endpoint: 'top250', key: 'top250', label: 'Top250' }
+    { endpoint: 'coming_soon', key: 'coming_soon', label: '即将上映' }
 ];
 
 const MAX_COUNT = 100;
@@ -131,7 +130,8 @@ async function fetchDoubanSubjects(endpoint) {
         if (subjects.length === 0) break;
         allSubjects.push(...subjects);
 
-        if (endpoint !== 'top250' || allSubjects.length >= (res.data.total || 250)) break;
+        const total = res.data?.total;
+        if (subjects.length < MAX_COUNT || (typeof total === 'number' && allSubjects.length >= total)) break;
         start += MAX_COUNT;
         await sleep(600);
     }
