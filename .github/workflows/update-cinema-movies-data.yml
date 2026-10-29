@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   sync-data:
-    name: Update now playing, coming soon, and Top 250 movies
+    name: Update now playing and coming soon movies
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
