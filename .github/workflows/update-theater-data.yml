@@ -1,0 +1,71 @@
+name: Update Theater Collection Data
+run-name: Update Douban theater collections
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generated-data-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync-data:
+    name: Update Mist, White Night, and X theater collections
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TZ: Asia/Shanghai
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --fund=false
+
+      - name: Generate Douban theater collections (retry up to 3 times)
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::Theater collections (attempt ${attempt}/3)"
+            set +e
+            node scripts/update-theater-data.js
+            exit_code=$?
+            set -e
+            echo "::endgroup::"
+            if [ "$exit_code" -eq 0 ]; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error::Theater collections failed after 3 attempts."
+              exit "$exit_code"
+            fi
+            delay=$((10 * attempt))
+            echo "::warning::Failed (exit ${exit_code}); retrying in ${delay}s."
+            sleep "$delay"
+          done
+
+      - name: Validate data/theater-data.json
+        run: node scripts/validate-generated-data.js data/theater-data.json
+
+      - name: Commit changed theater collection data
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/theater-data.json
+          if git diff --cached --quiet; then
+            echo "No generated-data changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: update theater collection data [skip ci]"
+          git push
