@@ -465,15 +465,72 @@ function roundHeat(value) {
     : null;
 }
 
-// 一个榜单：以榜单条目为种子做 TMDB 精确匹配，输出统一契约记录（保持榜单名次序）
+// 综艺等条目常带「第X季 / 年份」后缀，与 TMDB 主条目名对不上：全等失败时剥后缀再全等兜底。
+// 只用于 maoyan（悬疑剧场仍走严格全等）；兜底候选须归一化后与种子全等，多候选按 voteCount 择优。
+function stripSeasonSuffix(name) {
+  return String(name || '')
+    .trim()
+    .replace(/[（(][^（()）]*[）)]\s*$/, '')
+    .replace(/[\s·•・\-—]*第[一二三四五六七八九十百零\d]+[季期部]\s*$/, '')
+    .replace(/[\s·•・\-—]*(19|20)\d{2}\s*$/, '')
+    .trim();
+}
+
+function normalizeShowName(name) {
+  return stripSeasonSuffix(name).replace(/[\s·•・]/g, '').toLowerCase();
+}
+
+const tmdbLooseCache = new Map();
+
+function searchTmdbTvLoose(title) {
+  if (tmdbLooseCache.has(title)) return tmdbLooseCache.get(title);
+
+  const promise = (async () => {
+    const target = normalizeShowName(title);
+    if (!target || target === String(title).trim().replace(/[\s·•・]/g, '').toLowerCase()) {
+      return null; // 名字本身没有可剥的后缀，兜底无意义
+    }
+    const queries = [...new Set([title, stripSeasonSuffix(title)])];
+    let best = null;
+    for (const query of queries) {
+      const response = await withRetry(`TMDB 兜底「${query}」`, () =>
+        axios.get(`${TMDB_SEARCH_URL}/tv`, {
+          params: { query, language: 'zh-CN', api_key: TMDB_API_KEY },
+          timeout: HTTP_TIMEOUT
+        })
+      );
+      for (const result of response.data?.results || []) {
+        if (normalizeShowName(result.name) !== target && normalizeShowName(result.original_name) !== target) {
+          continue;
+        }
+        if (!best
+          || (result.vote_count || 0) > (best.vote_count || 0)
+          || ((result.vote_count || 0) === (best.vote_count || 0) && (result.popularity || 0) > (best.popularity || 0))) {
+          best = result;
+        }
+      }
+    }
+    return best ? toMediaRecord(best, 'tv', TV_GENRES) : null;
+  })();
+
+  tmdbLooseCache.set(title, promise);
+  return promise;
+}
+
+// 一个榜单：以榜单条目为种子做 TMDB 匹配（全等优先、剥后缀兜底），输出统一契约记录（保持榜单名次序）
 async function buildMaoyanBoard(platform, rawList) {
   let unmatched = 0;
+  let looseMatched = 0;
   const matched = await mapPool(rawList, CONCURRENCY, async (item) => {
     const name = item.seriesInfo?.name?.trim();
     const heat = roundHeat(item.barValue);
     if (!name || heat === null) return null;
     try {
-      const record = await searchTmdbTv(name);
+      let record = await searchTmdbTv(name);
+      if (!record) {
+        record = await searchTmdbTvLoose(name);
+        if (record) looseMatched++;
+      }
       if (!record) {
         unmatched++;
         return null;
@@ -485,8 +542,11 @@ async function buildMaoyanBoard(platform, rawList) {
       return null;
     }
   });
+  if (looseMatched > 0) {
+    console.log(`${platform.name}：兜底匹配 ${looseMatched} 条（剥季数/年份后缀后全等）`);
+  }
   if (unmatched > 0) {
-    console.warn(`${platform.name}：${unmatched} 条在 TMDB 无精确匹配被跳过`);
+    console.warn(`${platform.name}：${unmatched} 条在 TMDB 无匹配被跳过`);
   }
   return matched.filter(Boolean);
 }
