@@ -4,7 +4,7 @@ var WidgetMetadata = {
   description: '悬疑剧场 + 院线电影 + 网播热度，数据每日自动更新',
   author: '两块',
   site: 'https://github.com/2kuai/RexWidgets',
-  version: '1.2.0',
+  version: '1.2.1',
   requiredVersion: '0.0.1',
   globalParams: [
     {
@@ -78,9 +78,6 @@ var WidgetMetadata = {
             { title: '优酷', value: 'youku' },
             { title: '爱奇艺', value: 'iqiyi' },
             { title: '腾讯视频', value: 'tencent' },
-            { title: '乐视', value: 'letv' },
-            { title: '搜狐', value: 'sohu' },
-            { title: 'PPTV', value: 'pptv' },
             { title: '芒果TV', value: 'mgtv' }
           ]
         },

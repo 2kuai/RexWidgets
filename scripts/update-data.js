@@ -445,9 +445,6 @@ const MAOYAN_PLATFORMS = [
   { type: 1, key: 'youku', name: '优酷' },
   { type: 2, key: 'iqiyi', name: '爱奇艺' },
   { type: 3, key: 'tencent', name: '腾讯视频' },
-  { type: 4, key: 'letv', name: '乐视' },
-  { type: 5, key: 'sohu', name: '搜狐' },
-  { type: 6, key: 'pptv', name: 'PPTV' },
   { type: 7, key: 'mgtv', name: '芒果TV' }
 ];
 
@@ -600,7 +597,7 @@ async function updateMaoyan() {
     throw new Error('TMDB_API_KEY environment variable is required.');
   }
 
-  console.log('开始生成猫眼网播热度（电视剧+网络剧 / 综艺，16 个平台榜单）...');
+  console.log('开始生成猫眼网播热度（电视剧+网络剧 / 综艺，10 个平台榜单）...');
   const previous = readPrevious(MAOYAN_DATA_FILE);
   const rawBoards = await fetchMaoyanBoards();
   const data = {
