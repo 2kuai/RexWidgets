@@ -1,10 +1,10 @@
 var WidgetMetadata = {
   id: 'rex_widgets',
   title: 'RexWidgets',
-  description: '悬疑剧场 + 院线电影，数据每日自动更新',
+  description: '悬疑剧场 + 院线电影 + 网播热度，数据每日自动更新',
   author: '两块',
   site: 'https://github.com/2kuai/RexWidgets',
-  version: '1.0.0',
+  version: '1.1.0',
   requiredVersion: '0.0.1',
   globalParams: [
     {
@@ -56,6 +56,39 @@ var WidgetMetadata = {
       ]
     },
     {
+      title: '网播热度',
+      functionName: 'getMaoyanHeat',
+      cacheDuration: 43200,
+      params: [
+        {
+          name: 'platform',
+          title: '平台',
+          type: 'enumeration',
+          enumOptions: [
+            { title: '全网', value: 'all' },
+            { title: '优酷', value: 'youku' },
+            { title: '爱奇艺', value: 'iqiyi' },
+            { title: '腾讯视频', value: 'tencent' },
+            { title: '乐视', value: 'letv' },
+            { title: '搜狐', value: 'sohu' },
+            { title: 'PPTV', value: 'pptv' },
+            { title: '芒果TV', value: 'mgtv' }
+          ]
+        },
+        {
+          name: 'sort_by',
+          title: '排序',
+          type: 'enumeration',
+          enumOptions: [
+            { title: '排序', value: 'default' },
+            { title: '热度最高', value: 'popularity' },
+            { title: '发布时间', value: 'time' },
+            { title: '评分最高', value: 'rating' }
+          ]
+        }
+      ]
+    },
+    {
       title: '院线电影',
       functionName: 'getMovies',
       cacheDuration: 43200,
@@ -87,6 +120,7 @@ var WidgetMetadata = {
 
 const THEATER_DATA_URL = 'https://raw.githubusercontent.com/2kuai/RexWidgets/main/data/theater-data.json';
 const CINEMA_DATA_URL = 'https://raw.githubusercontent.com/2kuai/RexWidgets/main/data/cinema-movies.json';
+const MAOYAN_DATA_URL = 'https://raw.githubusercontent.com/2kuai/RexWidgets/main/data/maoyan-web-heat.json';
 
 const Utils = {
   emptyTips: [{ id: 'empty', type: 'text', title: '⚠️ 加载失败', description: '请检查网络或配置 GitHub 加速' }],
@@ -163,5 +197,18 @@ async function getMovies(params = {}) {
   if (!data) return Utils.emptyTips;
 
   const list = data[params.sort || 'now_playing'] || [];
+  return Utils.sortList(list, params.sort_by);
+}
+
+/**
+ * 网播热度
+ * 数据由 GitHub Actions 每日以猫眼网播热度榜（电视剧+网络剧）为种子 + TMDB 精确匹配生成，
+ * 见 scripts/update-data.js（maoyan）。默认顺序即榜单名次（热度写入 popularity）
+ */
+async function getMaoyanHeat(params = {}) {
+  const data = await Utils.fetchData(params.githubProxy, MAOYAN_DATA_URL);
+  if (!data) return Utils.emptyTips;
+
+  const list = data[params.platform || 'all'] || [];
   return Utils.sortList(list, params.sort_by);
 }

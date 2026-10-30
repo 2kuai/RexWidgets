@@ -12,15 +12,16 @@
  *   TMDB_API_KEY    TMDB v3 API Key（api_key 查询参数鉴权），theater / cinema 都需要
  *   DOUBAN_API_KEY  豆瓣 API Key，仅 cinema 需要
  *   BASE_URL        豆瓣 API 地址，可选，默认 https://api.douban.com/v2/movie
- *   （maoyan 不需要密钥，但需要 Playwright 的 Chromium：npx playwright install chromium）
+ *   （maoyan 同样需要 TMDB_API_KEY，并需要 Playwright 的 Chromium：npx playwright install chromium）
  *
  * 通用策略（两个数据源一致）：
  *   - TMDB 查询走并发池（5）+ 单条容错，单个条目失败只跳过计数，不拖垮整轮；
  *   - 单个分类 / 剧场整体失败时保留上一版数据，全部失败才让整轮失败；
  *   - 写盘前经 lib/data-contract.js 校验字段契约，校验不过不落盘。
- *   - maoyan 例外：接口带 H5guard 签名校验，只能借 Playwright 页面内请求取数；
- *     热度取明文字段 barValue（currHeat 是字体混淆的展示串，不用）；任一平台
- *     榜单抓取失败整轮失败、保留上一版，写盘前按 validateMaoyanData 自校验。
+ *   - maoyan 的种子来自猫眼网播热度榜：接口带 H5guard 签名校验，只能借
+ *     Playwright 页面内请求取数；热度取明文字段 barValue（currHeat 是字体
+ *     混淆的展示串，不用），写入统一契约的 popularity 并另存 heat 字段；
+ *     单个榜单整体失败时保留上一版该榜单，全部失败才让整轮失败。
  */
 import axios from 'axios';
 import * as cheerio from 'cheerio';
@@ -452,32 +453,36 @@ function shanghaiDateParts(date = new Date()) {
   return { date: `${year}-${month}-${day}`, showDate: `${year}${month}${day}` };
 }
 
-function validateMaoyanData(data) {
-  if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    throw new Error('猫眼热度数据不是对象，保留上一版。');
-  }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(data.date || '')) {
-    throw new Error('猫眼热度数据缺少合法 date，保留上一版。');
-  }
-  if (!Array.isArray(data.boards) || data.boards.length !== MAOYAN_PLATFORMS.length) {
-    throw new Error(`猫眼热度应有 ${MAOYAN_PLATFORMS.length} 个榜单，实际 ${data.boards?.length}，保留上一版。`);
-  }
-  let total = 0;
-  for (const board of data.boards) {
-    if (!board || typeof board.platform !== 'string' || !Array.isArray(board.list) || board.list.length === 0) {
-      throw new Error(`猫眼热度「${board?.platform || '?'}」榜单为空，保留上一版。`);
-    }
-    for (const item of board.list) {
-      if (!item || typeof item.name !== 'string' || !item.name) {
-        throw new Error('猫眼热度条目缺少 name，保留上一版。');
+function roundHeat(value) {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? Math.round(value * 100) / 100
+    : null;
+}
+
+// 一个榜单：以榜单条目为种子做 TMDB 精确匹配，输出统一契约记录（保持榜单名次序）
+async function buildMaoyanBoard(platform, rawList) {
+  let unmatched = 0;
+  const matched = await mapPool(rawList, CONCURRENCY, async (item) => {
+    const name = item.seriesInfo?.name?.trim();
+    const heat = roundHeat(item.barValue);
+    if (!name || heat === null) return null;
+    try {
+      const record = await searchTmdbTv(name);
+      if (!record) {
+        unmatched++;
+        return null;
       }
-      if (typeof item.heat !== 'number' || !Number.isFinite(item.heat)) {
-        throw new Error(`猫眼热度「${item.name}」heat 非法，保留上一版。`);
-      }
+      // 热度写入 popularity（模块按热度排序即按猫眼热度），同时保留 heat 原始字段
+      return { ...record, popularity: heat, heat };
+    } catch (error) {
+      console.warn(`${platform.name}「${name}」匹配失败，已跳过：${error.message}`);
+      return null;
     }
-    total += board.list.length;
+  });
+  if (unmatched > 0) {
+    console.warn(`${platform.name}：${unmatched} 条在 TMDB 无精确匹配被跳过`);
   }
-  return total;
+  return matched.filter(Boolean);
 }
 
 async function fetchMaoyanBoards() {
@@ -514,31 +519,48 @@ async function fetchMaoyanBoards() {
 }
 
 async function updateMaoyan() {
-  console.log('开始生成猫眼网播热度（电视剧+网络剧，8 个平台榜单）...');
-  const rawBoards = await fetchMaoyanBoards();
-  const { date } = shanghaiDateParts();
-  const boards = MAOYAN_PLATFORMS.map((platform) => {
-    const raw = rawBoards.find((board) => board.type === platform.type);
-    const list = (raw?.list || []).map((item, index) => ({
-      rank: index + 1,
-      seriesId: item.seriesInfo?.seriesId ?? null,
-      name: item.seriesInfo?.name ?? '',
-      // 热度取明文字段 barValue（currHeat 是字体混淆展示串）；保留两位小数与页面展示口径一致
-      heat: typeof item.barValue === 'number' ? Math.round(item.barValue * 100) / 100 : null,
-      platformDesc: item.seriesInfo?.platformDesc ?? '',
-      releaseInfo: item.seriesInfo?.releaseInfo ?? '',
-      newSeries: Boolean(item.seriesInfo?.newSeries)
-    }));
-    return { key: platform.key, platform: platform.name, platformType: platform.type, list };
-  });
-  const data = { date, updatedAt: new Date().toISOString(), source: MAOYAN_PAGE_URL, boards };
-  const total = validateMaoyanData(data);
+  if (!TMDB_API_KEY) {
+    throw new Error('TMDB_API_KEY environment variable is required.');
+  }
 
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-  const temporaryPath = path.join(DATA_DIR, `.${path.basename(MAOYAN_DATA_FILE)}.${process.pid}.tmp`);
-  fs.writeFileSync(temporaryPath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
-  fs.renameSync(temporaryPath, MAOYAN_DATA_FILE);
-  console.log(`[data] 猫眼网播热度：${MAOYAN_PLATFORMS.length} 个榜单共 ${total} 条，已写入 ${MAOYAN_DATA_FILE}。`);
+  console.log('开始生成猫眼网播热度（电视剧+网络剧，8 个平台榜单）...');
+  const previous = readPrevious(MAOYAN_DATA_FILE);
+  const rawBoards = await fetchMaoyanBoards();
+  const data = {
+    last_updated: new Date(Date.now() + 8 * 3600 * 1000).toISOString().replace('Z', '+08:00')
+  };
+
+  // 单个榜单整体失败时保留上一版该榜单数据；全部失败才让整轮失败
+  let successCount = 0;
+  for (const platform of MAOYAN_PLATFORMS) {
+    const raw = rawBoards.find((board) => board.type === platform.type);
+    try {
+      if (!raw || !Array.isArray(raw.list) || raw.list.length === 0) {
+        throw new Error('榜单为空');
+      }
+      const list = await buildMaoyanBoard(platform, raw.list);
+      if (list.length === 0) {
+        throw new Error('TMDB 全部未匹配');
+      }
+      data[platform.key] = list;
+      successCount++;
+      console.log(`${platform.name}：榜单 ${raw.list.length} 条，TMDB 匹配 ${list.length} 条`);
+    } catch (error) {
+      console.error(`${platform.name} 更新失败：${error.message}`);
+      if (Array.isArray(previous?.[platform.key]) && previous[platform.key].length > 0) {
+        console.warn(`${platform.name}：保留上一版数据`);
+        data[platform.key] = previous[platform.key];
+      }
+    }
+  }
+  if (successCount === 0) {
+    throw new Error('All maoyan boards failed to update.');
+  }
+
+  writeValidatedJson(MAOYAN_DATA_FILE, data, {
+    label: 'Maoyan web heat boards',
+    requiredCollections: [['all']]
+  });
 }
 
 // ---------- 入口 ----------
@@ -549,13 +571,8 @@ function validateFiles(filePaths) {
   }
   for (const filePath of filePaths) {
     const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    if (path.basename(filePath) === path.basename(MAOYAN_DATA_FILE)) {
-      const recordCount = validateMaoyanData(data);
-      console.log(`[data] ${path.basename(filePath)}: ${recordCount} heat records across ${data.boards.length} boards are valid.`);
-    } else {
-      const recordCount = validateData(data);
-      console.log(`[data] ${path.basename(filePath)}: ${recordCount} media records match the shared contract.`);
-    }
+    const recordCount = validateData(data);
+    console.log(`[data] ${path.basename(filePath)}: ${recordCount} media records match the shared contract.`);
   }
 }
 
