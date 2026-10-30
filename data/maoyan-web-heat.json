@@ -1,6 +1,6 @@
 {
   "date": "2026-10-30",
-  "updatedAt": "2026-10-30T11:45:05.948Z",
+  "updatedAt": "2026-10-30T11:48:41.502Z",
   "source": "https://piaofang.maoyan.com/i/dashboard/web-heat",
   "boards": [
     {
@@ -12,7 +12,7 @@
           "rank": 1,
           "seriesId": 1515761,
           "name": "小城良方",
-          "heat": 7450.93,
+          "heat": 7471.37,
           "platformDesc": "爱奇艺独播",
           "releaseInfo": "上线10天",
           "newSeries": false
@@ -21,7 +21,7 @@
           "rank": 2,
           "seriesId": 1546561,
           "name": "嫁金钗",
-          "heat": 6668.1,
+          "heat": 6686.31,
           "platformDesc": "优酷独播",
           "releaseInfo": "上线15天",
           "newSeries": false
@@ -30,7 +30,7 @@
           "rank": 3,
           "seriesId": 1481502,
           "name": "尚公主",
-          "heat": 6022.81,
+          "heat": 6039.2,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线8天",
           "newSeries": false
@@ -39,7 +39,7 @@
           "rank": 4,
           "seriesId": 1537203,
           "name": "玉簟秋",
-          "heat": 5538.49,
+          "heat": 5553.55,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线19天",
           "newSeries": false
@@ -48,7 +48,7 @@
           "rank": 5,
           "seriesId": 1500399,
           "name": "兰香如故",
-          "heat": 4886.21,
+          "heat": 4898,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线50天",
           "newSeries": false
@@ -57,7 +57,7 @@
           "rank": 6,
           "seriesId": 1528527,
           "name": "美人余",
-          "heat": 4445.63,
+          "heat": 4455.97,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -66,7 +66,7 @@
           "rank": 7,
           "seriesId": 1487287,
           "name": "伟大的长征",
-          "heat": 4094.51,
+          "heat": 4105.39,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -75,7 +75,7 @@
           "rank": 8,
           "seriesId": 1856580,
           "name": "北境往事",
-          "heat": 3769.6,
+          "heat": 3779.45,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线首日",
           "newSeries": true
@@ -84,7 +84,7 @@
           "rank": 9,
           "seriesId": 1552609,
           "name": "醉梦",
-          "heat": 3465.58,
+          "heat": 3473.84,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线15天",
           "newSeries": false
@@ -93,7 +93,7 @@
           "rank": 10,
           "seriesId": 1582675,
           "name": "蒸蒸日上",
-          "heat": 3120.67,
+          "heat": 3128.65,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线21天",
           "newSeries": false
@@ -109,7 +109,7 @@
           "rank": 1,
           "seriesId": 1546561,
           "name": "嫁金钗",
-          "heat": 7226.88,
+          "heat": 7246.61,
           "platformDesc": "优酷独播",
           "releaseInfo": "上线15天",
           "newSeries": false
@@ -118,7 +118,7 @@
           "rank": 2,
           "seriesId": 1531687,
           "name": "早春晴朗",
-          "heat": 5280.28,
+          "heat": 5294.09,
           "platformDesc": "优酷独播",
           "releaseInfo": "上线66天",
           "newSeries": false
@@ -127,7 +127,7 @@
           "rank": 3,
           "seriesId": 1487905,
           "name": "无可替代",
-          "heat": 4847.7,
+          "heat": 4860.37,
           "platformDesc": "优酷独播",
           "releaseInfo": "上线33天",
           "newSeries": false
@@ -136,7 +136,7 @@
           "rank": 4,
           "seriesId": 1501415,
           "name": "此处通往繁星",
-          "heat": 4276.33,
+          "heat": 4286.89,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -145,7 +145,7 @@
           "rank": 5,
           "seriesId": 1460757,
           "name": "一瓯春",
-          "heat": 3799.95,
+          "heat": 3809.39,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线44天",
           "newSeries": false
@@ -154,7 +154,7 @@
           "rank": 6,
           "seriesId": 1596141,
           "name": "九门",
-          "heat": 3491.28,
+          "heat": 3500.72,
           "platformDesc": "优酷独播",
           "releaseInfo": "上线93天",
           "newSeries": false
@@ -163,7 +163,7 @@
           "rank": 7,
           "seriesId": 1570455,
           "name": "冬城猎凶",
-          "heat": 3035.44,
+          "heat": 3043.11,
           "platformDesc": "优酷独播",
           "releaseInfo": "上线51天",
           "newSeries": false
@@ -172,7 +172,7 @@
           "rank": 8,
           "seriesId": 1526384,
           "name": "师兄太稳健",
-          "heat": 2772.47,
+          "heat": 2779.28,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线73天",
           "newSeries": false
@@ -181,7 +181,7 @@
           "rank": 9,
           "seriesId": 1508682,
           "name": "悬案",
-          "heat": 2402.97,
+          "heat": 2408.91,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线120天",
           "newSeries": false
@@ -190,7 +190,7 @@
           "rank": 10,
           "seriesId": 1210455,
           "name": "云秀行",
-          "heat": 2118.48,
+          "heat": 2123.56,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线133天",
           "newSeries": false
@@ -206,7 +206,7 @@
           "rank": 1,
           "seriesId": 1515761,
           "name": "小城良方",
-          "heat": 7450.93,
+          "heat": 7471.61,
           "platformDesc": "爱奇艺独播",
           "releaseInfo": "上线10天",
           "newSeries": false
@@ -215,7 +215,7 @@
           "rank": 2,
           "seriesId": 1487287,
           "name": "伟大的长征",
-          "heat": 6122.72,
+          "heat": 6139.18,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -224,7 +224,7 @@
           "rank": 3,
           "seriesId": 1582675,
           "name": "蒸蒸日上",
-          "heat": 5481.35,
+          "heat": 5495.54,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线21天",
           "newSeries": false
@@ -233,7 +233,7 @@
           "rank": 4,
           "seriesId": 1568961,
           "name": "我不是大师",
-          "heat": 4828.83,
+          "heat": 4840.52,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线37天",
           "newSeries": false
@@ -242,7 +242,7 @@
           "rank": 5,
           "seriesId": 1572059,
           "name": "魅影神捕",
-          "heat": 4361.72,
+          "heat": 4372.83,
           "platformDesc": "爱奇艺独播",
           "releaseInfo": "上线29天",
           "newSeries": false
@@ -251,7 +251,7 @@
           "rank": 6,
           "seriesId": 1568284,
           "name": "把黑夜点燃",
-          "heat": 4012.07,
+          "heat": 4022.2,
           "platformDesc": "爱奇艺独播",
           "releaseInfo": "上线16天",
           "newSeries": false
@@ -260,7 +260,7 @@
           "rank": 7,
           "seriesId": 1532471,
           "name": "重器",
-          "heat": 3536.04,
+          "heat": 3544.96,
           "platformDesc": "爱奇艺独播",
           "releaseInfo": "上线82天",
           "newSeries": false
@@ -269,7 +269,7 @@
           "rank": 8,
           "seriesId": 1525573,
           "name": "喜剧之王",
-          "heat": 3234.58,
+          "heat": 3242.91,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线25天",
           "newSeries": false
@@ -278,7 +278,7 @@
           "rank": 9,
           "seriesId": 1578545,
           "name": "这一秒过火",
-          "heat": 2973.71,
+          "heat": 2980.96,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线104天",
           "newSeries": false
@@ -287,7 +287,7 @@
           "rank": 10,
           "seriesId": 1484682,
           "name": "醒来",
-          "heat": 2729.85,
+          "heat": 2736.75,
           "platformDesc": "爱奇艺独播",
           "releaseInfo": "上线66天",
           "newSeries": false
@@ -303,7 +303,7 @@
           "rank": 1,
           "seriesId": 1481502,
           "name": "尚公主",
-          "heat": 7074.51,
+          "heat": 7093.99,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线8天",
           "newSeries": false
@@ -312,7 +312,7 @@
           "rank": 2,
           "seriesId": 1500399,
           "name": "兰香如故",
-          "heat": 6220.39,
+          "heat": 6235.58,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线50天",
           "newSeries": false
@@ -321,7 +321,7 @@
           "rank": 3,
           "seriesId": 1528527,
           "name": "美人余",
-          "heat": 5659.5,
+          "heat": 5672.83,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -330,7 +330,7 @@
           "rank": 4,
           "seriesId": 1487287,
           "name": "伟大的长征",
-          "heat": 5212.51,
+          "heat": 5226.53,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -339,7 +339,7 @@
           "rank": 5,
           "seriesId": 1856580,
           "name": "北境往事",
-          "heat": 4798.89,
+          "heat": 4811.58,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线首日",
           "newSeries": true
@@ -348,7 +348,7 @@
           "rank": 6,
           "seriesId": 1552609,
           "name": "醉梦",
-          "heat": 4411.86,
+          "heat": 4422.49,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线15天",
           "newSeries": false
@@ -357,7 +357,7 @@
           "rank": 7,
           "seriesId": 1582675,
           "name": "蒸蒸日上",
-          "heat": 3972.77,
+          "heat": 3983.05,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线21天",
           "newSeries": false
@@ -366,7 +366,7 @@
           "rank": 8,
           "seriesId": 1491474,
           "name": "交锋",
-          "heat": 3526.37,
+          "heat": 3535.07,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线55天",
           "newSeries": false
@@ -375,7 +375,7 @@
           "rank": 9,
           "seriesId": 1568961,
           "name": "我不是大师",
-          "heat": 3229.23,
+          "heat": 3237.05,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线37天",
           "newSeries": false
@@ -384,7 +384,7 @@
           "rank": 10,
           "seriesId": 1206678,
           "name": "莫语者",
-          "heat": 2866.63,
+          "heat": 2873.97,
           "platformDesc": "腾讯视频独播",
           "releaseInfo": "上线10天",
           "newSeries": false
@@ -400,7 +400,7 @@
           "rank": 1,
           "seriesId": 1592861,
           "name": "种墨园",
-          "heat": 2602.64,
+          "heat": 2608.88,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线130天",
           "newSeries": false
@@ -409,7 +409,7 @@
           "rank": 2,
           "seriesId": 1324726,
           "name": "我哥我嫂",
-          "heat": 1834.57,
+          "heat": 1841.42,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线2519天",
           "newSeries": false
@@ -418,7 +418,7 @@
           "rank": 3,
           "seriesId": 1599077,
           "name": "刺情",
-          "heat": 1467.69,
+          "heat": 1470.64,
           "platformDesc": "乐视视频独播",
           "releaseInfo": "上线415天",
           "newSeries": false
@@ -427,7 +427,7 @@
           "rank": 4,
           "seriesId": 1448907,
           "name": "一路向前",
-          "heat": 1295.29,
+          "heat": 1296.89,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线978天",
           "newSeries": false
@@ -436,7 +436,7 @@
           "rank": 5,
           "seriesId": 1474398,
           "name": "三江潮",
-          "heat": 1189.6,
+          "heat": 1191.09,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线386天",
           "newSeries": false
@@ -445,7 +445,7 @@
           "rank": 6,
           "seriesId": 400146,
           "name": "大话西游之爱你一万年",
-          "heat": 979.65,
+          "heat": 980.09,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线3320天",
           "newSeries": false
@@ -454,7 +454,7 @@
           "rank": 7,
           "seriesId": 1491515,
           "name": "蝶影",
-          "heat": 891.72,
+          "heat": 892.6,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线1320天",
           "newSeries": false
@@ -463,7 +463,7 @@
           "rank": 8,
           "seriesId": 400428,
           "name": "大国船梦",
-          "heat": 821.91,
+          "heat": 822.23,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线345天",
           "newSeries": false
@@ -472,7 +472,7 @@
           "rank": 9,
           "seriesId": 1390826,
           "name": "当祖国需要我们的时候",
-          "heat": 707.7,
+          "heat": 708.05,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线1437天",
           "newSeries": false
@@ -481,7 +481,7 @@
           "rank": 10,
           "seriesId": 1430703,
           "name": "川流",
-          "heat": 595.12,
+          "heat": 595.47,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线943天",
           "newSeries": false
@@ -497,7 +497,7 @@
           "rank": 1,
           "seriesId": 1448949,
           "name": "欢迎回我的频道",
-          "heat": 3670.3,
+          "heat": 3673.8,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线157天",
           "newSeries": false
@@ -506,7 +506,7 @@
           "rank": 2,
           "seriesId": 1592861,
           "name": "种墨园",
-          "heat": 2401.41,
+          "heat": 2407.16,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线130天",
           "newSeries": false
@@ -515,7 +515,7 @@
           "rank": 3,
           "seriesId": 409312,
           "name": "我的体育老师",
-          "heat": 1790.97,
+          "heat": 1793.98,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线3274天",
           "newSeries": false
@@ -524,7 +524,7 @@
           "rank": 4,
           "seriesId": 1324726,
           "name": "我哥我嫂",
-          "heat": 1561.84,
+          "heat": 1567.68,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线2519天",
           "newSeries": false
@@ -533,7 +533,7 @@
           "rank": 5,
           "seriesId": 1317433,
           "name": "远方的山楂树",
-          "heat": 1338.88,
+          "heat": 1339.31,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线2500天",
           "newSeries": false
@@ -542,7 +542,7 @@
           "rank": 6,
           "seriesId": 369197,
           "name": "生活大爆炸 第九季",
-          "heat": 1220.63,
+          "heat": 1222.4,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线4058天",
           "newSeries": false
@@ -551,7 +551,7 @@
           "rank": 7,
           "seriesId": 368831,
           "name": "风骚律师 第一季",
-          "heat": 1120.12,
+          "heat": 1121.73,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线4283天",
           "newSeries": false
@@ -560,7 +560,7 @@
           "rank": 8,
           "seriesId": 368590,
           "name": "生活大爆炸 第八季",
-          "heat": 1033.06,
+          "heat": 1034.54,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线4422天",
           "newSeries": false
@@ -569,7 +569,7 @@
           "rank": 9,
           "seriesId": 1203753,
           "name": "生活大爆炸 第十一季",
-          "heat": 952.14,
+          "heat": 953.51,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线3323天",
           "newSeries": false
@@ -578,7 +578,7 @@
           "rank": 10,
           "seriesId": 1338918,
           "name": "喜鹊谋杀案",
-          "heat": 874.6,
+          "heat": 875.85,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线1724天",
           "newSeries": false
@@ -594,7 +594,7 @@
           "rank": 1,
           "seriesId": 1316486,
           "name": "阿勒泰的天空",
-          "heat": 1187.68,
+          "heat": 1188.31,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线3225天",
           "newSeries": false
@@ -603,7 +603,7 @@
           "rank": 2,
           "seriesId": 1437166,
           "name": "青春向前冲",
-          "heat": 1081.95,
+          "heat": 1082.49,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线1928天",
           "newSeries": false
@@ -612,7 +612,7 @@
           "rank": 3,
           "seriesId": 1204184,
           "name": "有个地方叫马兰",
-          "heat": 995.97,
+          "heat": 996.43,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线2792天",
           "newSeries": false
@@ -621,7 +621,7 @@
           "rank": 4,
           "seriesId": 1295594,
           "name": "温州三家人",
-          "heat": 911.19,
+          "heat": 911.59,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线2007天",
           "newSeries": false
@@ -630,7 +630,7 @@
           "rank": 5,
           "seriesId": 404816,
           "name": "黑河风云",
-          "heat": 750.53,
+          "heat": 750.62,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线2429天",
           "newSeries": false
@@ -646,7 +646,7 @@
           "rank": 1,
           "seriesId": 1537203,
           "name": "玉簟秋",
-          "heat": 7051.63,
+          "heat": 7070.74,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线19天",
           "newSeries": false
@@ -655,7 +655,7 @@
           "rank": 2,
           "seriesId": 1502423,
           "name": "黑岛监狱",
-          "heat": 5098.85,
+          "heat": 5111.8,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线38天",
           "newSeries": false
@@ -664,7 +664,7 @@
           "rank": 3,
           "seriesId": 1501415,
           "name": "此处通往繁星",
-          "heat": 4635.2,
+          "heat": 4646.6,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线22天",
           "newSeries": false
@@ -673,7 +673,7 @@
           "rank": 4,
           "seriesId": 1209232,
           "name": "我们的少年时代2",
-          "heat": 4258.28,
+          "heat": 4269.25,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线76天",
           "newSeries": false
@@ -682,7 +682,7 @@
           "rank": 5,
           "seriesId": 1454854,
           "name": "御廷谣",
-          "heat": 3849.75,
+          "heat": 3859.62,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线95天",
           "newSeries": false
@@ -691,7 +691,7 @@
           "rank": 6,
           "seriesId": 1621587,
           "name": "征途",
-          "heat": 3485.83,
+          "heat": 3494.39,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线35天",
           "newSeries": false
@@ -700,7 +700,7 @@
           "rank": 7,
           "seriesId": 1394268,
           "name": "第二次初恋",
-          "heat": 3155.86,
+          "heat": 3161.51,
           "platformDesc": "多平台播放",
           "releaseInfo": "上线16天",
           "newSeries": false
@@ -709,7 +709,7 @@
           "rank": 8,
           "seriesId": 1537410,
           "name": "野狗骨头",
-          "heat": 2796.57,
+          "heat": 2803.59,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线118天",
           "newSeries": false
@@ -718,7 +718,7 @@
           "rank": 9,
           "seriesId": 1761657,
           "name": "后西游记第一季",
-          "heat": 2562.72,
+          "heat": 2569.13,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线61天",
           "newSeries": false
@@ -727,7 +727,7 @@
           "rank": 10,
           "seriesId": 1546535,
           "name": "飞到我心上",
-          "heat": 2308.94,
+          "heat": 2314.68,
           "platformDesc": "芒果TV独播",
           "releaseInfo": "上线61天",
           "newSeries": false
