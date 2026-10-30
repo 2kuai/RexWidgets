@@ -3,9 +3,11 @@ run-name: Update widget data (${{ inputs.target || 'scheduled' }})
 
 on:
   schedule:
-    # 04:00 UTC 生成悬疑剧场，18:00 UTC 生成院线电影（由 Resolve target 步骤按触发时间区分）
+    # 04:00 UTC 生成悬疑剧场，18:00 UTC 生成院线电影，15:50 UTC（北京 23:50）生成猫眼网播热度
+    # （由 Resolve target 步骤按触发时间区分）
     - cron: "0 4 * * *"
     - cron: "0 18 * * *"
+    - cron: "50 15 * * *"
   workflow_dispatch:
     inputs:
       target:
@@ -15,6 +17,7 @@ on:
           - all
           - theater
           - cinema
+          - maoyan
         default: all
 
 permissions:
@@ -51,6 +54,8 @@ jobs:
             echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "0 18 * * *" ]; then
             echo "target=cinema" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "50 15 * * *" ]; then
+            echo "target=maoyan" >> "$GITHUB_OUTPUT"
           else
             echo "target=theater" >> "$GITHUB_OUTPUT"
           fi
@@ -58,6 +63,10 @@ jobs:
 
       - name: Install dependencies
         run: npm install --ignore-scripts --no-audit --fund=false
+
+      - name: Install Chromium for Maoyan (only when needed)
+        if: steps.target.outputs.target == 'maoyan' || steps.target.outputs.target == 'all'
+        run: npx playwright install --with-deps chromium
 
       - name: Generate data (retry up to 3 times)
         env:
@@ -89,7 +98,8 @@ jobs:
           case "$TARGET" in
             theater) node scripts/update-data.js validate data/theater-data.json ;;
             cinema) node scripts/update-data.js validate data/cinema-movies.json ;;
-            all) node scripts/update-data.js validate data/theater-data.json data/cinema-movies.json ;;
+            maoyan) node scripts/update-data.js validate data/maoyan-web-heat.json ;;
+            all) node scripts/update-data.js validate data/theater-data.json data/cinema-movies.json data/maoyan-web-heat.json ;;
           esac
 
       - name: Commit changed data
@@ -98,7 +108,7 @@ jobs:
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- data/theater-data.json data/cinema-movies.json
+          git add -- data/theater-data.json data/cinema-movies.json data/maoyan-web-heat.json
           if git diff --cached --quiet; then
             echo "No generated-data changes to commit."
             exit 0
