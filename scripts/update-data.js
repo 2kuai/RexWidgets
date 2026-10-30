@@ -318,10 +318,12 @@ async function searchTmdbMovie(doubanItem) {
   const match = results.find(m => (m.title == title || m.original_title == originalTitle)) || null;
   if (!match) return null;
 
+  // 海报只用 TMDB 的：豆瓣图床（doubanio）有防盗链、无 Referer 请求被 418 拦截，
+  // 客户端里根本显示不出来，宁可留空（可配合模块的「隐藏无封面资源」全局开关）
   return toMediaRecord(match, 'movie', MOVIE_GENRES, {
     releaseDate: match.release_date || doubanItem.year || '',
-    posterPath: match.poster_path || doubanItem.images?.large || '',
-    backdropPath: match.backdrop_path || doubanItem.images?.large || ''
+    posterPath: match.poster_path || '',
+    backdropPath: match.backdrop_path || ''
   });
 }
 
