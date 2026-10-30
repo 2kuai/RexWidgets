@@ -4,7 +4,7 @@ var WidgetMetadata = {
   description: '悬疑剧场 + 院线电影 + 网播热度 + 综艺热度，数据每日自动更新',
   author: '两块',
   site: 'https://github.com/2kuai/RexWidgets',
-  version: '1.4.0',
+  version: '1.4.1',
   requiredVersion: '0.0.1',
   globalParams: [
     {
@@ -56,7 +56,7 @@ var WidgetMetadata = {
           title: '排序',
           type: 'enumeration',
           enumOptions: [
-            { title: '排序', value: 'default' },
+            { title: '默认排序', value: 'default' },
             { title: '热度最高', value: 'popularity' },
             { title: '发布时间', value: 'time' },
             { title: '评分最高', value: 'rating' }
@@ -86,7 +86,7 @@ var WidgetMetadata = {
           title: '排序',
           type: 'enumeration',
           enumOptions: [
-            { title: '排序', value: 'default' },
+            { title: '默认排序', value: 'default' },
             { title: '热度最高', value: 'popularity' },
             { title: '发布时间', value: 'time' },
             { title: '评分最高', value: 'rating' }
@@ -116,7 +116,7 @@ var WidgetMetadata = {
           title: '排序',
           type: 'enumeration',
           enumOptions: [
-            { title: '排序', value: 'default' },
+            { title: '默认排序', value: 'default' },
             { title: '热度最高', value: 'popularity' },
             { title: '发布时间', value: 'time' },
             { title: '评分最高', value: 'rating' }
@@ -143,7 +143,7 @@ var WidgetMetadata = {
           title: '排序',
           type: 'enumeration',
           enumOptions: [
-            { title: '排序', value: 'default' },
+            { title: '默认排序', value: 'default' },
             { title: '热度最高', value: 'popularity' },
             { title: '发布时间', value: 'time' },
             { title: '评分最高', value: 'rating' }
