@@ -1,0 +1,13 @@
+# 全仓库统一格式：UTF-8、LF、2 空格缩进、文件末尾保留空行
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false

@@ -1,1 +1,19 @@
-{"dependencies":{"axios":"1.8.4","cheerio":"1.0.0"},"engines":{"node":">=20 <21"},"name":"rexwidgets-data-sync","private":true,"type":"module"}
+{
+  "dependencies": {
+    "axios": "1.8.4",
+    "cheerio": "1.0.0"
+  },
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "name": "rexwidgets",
+  "private": true,
+  "scripts": {
+    "update": "node scripts/update-data.js all",
+    "update:cinema": "node scripts/update-data.js cinema",
+    "update:theater": "node scripts/update-data.js theater",
+    "validate": "node scripts/update-data.js validate"
+  },
+  "type": "module",
+  "version": "1.1.0"
+}
