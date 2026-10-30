@@ -1,0 +1,107 @@
+name: Update Widget Data
+run-name: Update widget data (${{ inputs.target || 'scheduled' }})
+
+on:
+  schedule:
+    # 04:00 UTC 生成悬疑剧场，18:00 UTC 生成院线电影（由 Resolve target 步骤按触发时间区分）
+    - cron: "0 4 * * *"
+    - cron: "0 18 * * *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "要生成的数据"
+        type: choice
+        options:
+          - all
+          - theater
+          - cinema
+        default: all
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generated-data-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync-data:
+    name: Update widget data
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TZ: Asia/Shanghai
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      DOUBAN_API_KEY: ${{ secrets.DOUBAN_API_KEY }}
+      BASE_URL: ${{ secrets.BASE_URL }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Resolve target
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 18 * * *" ]; then
+            echo "target=cinema" >> "$GITHUB_OUTPUT"
+          else
+            echo "target=theater" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Resolved target: $(grep '^target=' "$GITHUB_OUTPUT" | cut -d= -f2)"
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --fund=false
+
+      - name: Generate data (retry up to 3 times)
+        env:
+          TARGET: ${{ steps.target.outputs.target }}
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::Generate ${TARGET} data (attempt ${attempt}/3)"
+            set +e
+            node scripts/update-data.js "$TARGET"
+            exit_code=$?
+            set -e
+            echo "::endgroup::"
+            if [ "$exit_code" -eq 0 ]; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error::Data generation failed after 3 attempts."
+              exit "$exit_code"
+            fi
+            delay=$((10 * attempt))
+            echo "::warning::Failed (exit ${exit_code}); retrying in ${delay}s."
+            sleep "$delay"
+          done
+
+      - name: Validate generated data
+        env:
+          TARGET: ${{ steps.target.outputs.target }}
+        run: |
+          case "$TARGET" in
+            theater) node scripts/update-data.js validate data/theater-data.json ;;
+            cinema) node scripts/update-data.js validate data/cinema-movies.json ;;
+            all) node scripts/update-data.js validate data/theater-data.json data/cinema-movies.json ;;
+          esac
+
+      - name: Commit changed data
+        env:
+          TARGET: ${{ steps.target.outputs.target }}
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/theater-data.json data/cinema-movies.json
+          if git diff --cached --quiet; then
+            echo "No generated-data changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: update ${TARGET} data [skip ci]"
+          git push
