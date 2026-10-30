@@ -4,7 +4,7 @@ Rex 播放器 Widget 模块仓库。模块数据由 GitHub Actions 每日自动�
 
 ## 模块
 
-只有一个模块文件 `widgets/rex-widgets.js`，内含下面三个模块，一次订阅全部到手：
+只有一个模块文件 `widgets/rex-widgets.js`，内含下面四个模块，一次订阅全部到手：
 
 ```
 rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/rex-widgets.js
@@ -12,13 +12,19 @@ rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets
 
 原始地址：`https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/rex-widgets.js`
 
+全局设置（对全部模块生效）：GitHub 加速源；隐藏无封面资源（开启后过滤掉没有海报封面的条目）。
+
 ### 悬疑剧场
 
 迷雾剧场 / 白夜剧场 / X剧场 悬疑剧集精选，可按「正在热播 / 即将上线」和剧场筛选，支持热度、发布时间、评分排序。
 
 ### 网播热度
 
-猫眼网播热度榜，可先选类别（电视剧+网络剧 / 综艺），再按全网 / 优酷 / 爱奇艺 / 腾讯视频 / 芒果TV 切换榜单，默认按榜单名次（热度）排列，支持发布时间、评分排序。
+猫眼网播热度榜（电视剧+网络剧），可按全网 / 优酷 / 爱奇艺 / 腾讯视频 / 芒果TV 切换榜单，默认按榜单名次（热度）排列，支持发布时间、评分排序。
+
+### 综艺热度
+
+猫眼综艺网播热度榜，与网播热度共用同一份数据，可按全网 / 优酷 / 爱奇艺 / 腾讯视频 / 芒果TV 切换榜单，默认按榜单名次（热度）排列，支持发布时间、评分排序。
 
 ### 院线电影
 

@@ -1,10 +1,10 @@
 var WidgetMetadata = {
   id: 'rex_widgets',
   title: 'RexWidgets',
-  description: '悬疑剧场 + 院线电影 + 网播热度，数据每日自动更新',
+  description: '悬疑剧场 + 院线电影 + 网播热度 + 综艺热度，数据每日自动更新',
   author: '两块',
   site: 'https://github.com/2kuai/RexWidgets',
-  version: '1.2.1',
+  version: '1.4.0',
   requiredVersion: '0.0.1',
   globalParams: [
     {
@@ -13,6 +13,15 @@ var WidgetMetadata = {
       type: 'input',
       placeholders: [
         { title: 'ghproxy', value: 'https://ghproxy.net/' }
+      ]
+    },
+    {
+      name: 'hideNoPoster',
+      title: '隐藏无封面资源',
+      type: 'enumeration',
+      enumOptions: [
+        { title: '关闭', value: 'false' },
+        { title: '开启', value: 'true' }
       ]
     }
   ],
@@ -61,14 +70,35 @@ var WidgetMetadata = {
       cacheDuration: 43200,
       params: [
         {
-          name: 'category',
-          title: '类别',
+          name: 'platform',
+          title: '平台',
           type: 'enumeration',
           enumOptions: [
-            { title: '电视剧+网络剧', value: 'tv' },
-            { title: '综艺', value: 'variety' }
+            { title: '全网', value: 'all' },
+            { title: '优酷', value: 'youku' },
+            { title: '爱奇艺', value: 'iqiyi' },
+            { title: '腾讯视频', value: 'tencent' },
+            { title: '芒果TV', value: 'mgtv' }
           ]
         },
+        {
+          name: 'sort_by',
+          title: '排序',
+          type: 'enumeration',
+          enumOptions: [
+            { title: '排序', value: 'default' },
+            { title: '热度最高', value: 'popularity' },
+            { title: '发布时间', value: 'time' },
+            { title: '评分最高', value: 'rating' }
+          ]
+        }
+      ]
+    },
+    {
+      title: '综艺热度',
+      functionName: 'getMaoyanVarietyHeat',
+      cacheDuration: 43200,
+      params: [
         {
           name: 'platform',
           title: '平台',
@@ -155,6 +185,12 @@ const Utils = {
     });
   },
 
+  // 全局开关「隐藏无封面资源」：过滤掉没有海报封面（posterPath 为空）的条目
+  filterNoPoster(list, enabled) {
+    if (!enabled) return list;
+    return list.filter(item => item?.posterPath);
+  },
+
   sortList(list, sortBy) {
     if (!sortBy || sortBy === 'default' || list.length < 2) return list;
     const sorted = [...list];
@@ -190,7 +226,7 @@ async function getSuspenseTheater(params = {}) {
     list = data[params.platformId]?.[section] || [];
   }
 
-  return Utils.sortList(list, params.sort_by);
+  return Utils.sortList(Utils.filterNoPoster(list, params.hideNoPoster === 'true'), params.sort_by);
 }
 
 /**
@@ -203,19 +239,27 @@ async function getMovies(params = {}) {
   if (!data) return Utils.emptyTips;
 
   const list = data[params.sort || 'now_playing'] || [];
-  return Utils.sortList(list, params.sort_by);
+  return Utils.sortList(Utils.filterNoPoster(list, params.hideNoPoster === 'true'), params.sort_by);
 }
 
 /**
- * 网播热度
- * 数据由 GitHub Actions 每日以猫眼网播热度榜（电视剧+网络剧 / 综艺）为种子 + TMDB 精确匹配生成，
+ * 网播热度 / 综艺热度（两个模块共用同一份数据）
+ * 数据由 GitHub Actions 每日以猫眼网播热度榜为种子 + TMDB 匹配生成，
  * 见 scripts/update-data.js（maoyan）。默认顺序即榜单名次（热度写入 popularity）
  */
-async function getMaoyanHeat(params = {}) {
+async function getMaoyanBoard(params, category) {
   const data = await Utils.fetchData(params.githubProxy, MAOYAN_DATA_URL);
   if (!data) return Utils.emptyTips;
 
-  const boards = data[params.category || 'tv'] || {};
+  const boards = data[category] || {};
   const list = boards[params.platform || 'all'] || [];
-  return Utils.sortList(list, params.sort_by);
+  return Utils.sortList(Utils.filterNoPoster(list, params.hideNoPoster === 'true'), params.sort_by);
+}
+
+async function getMaoyanHeat(params = {}) {
+  return getMaoyanBoard(params, 'tv');
+}
+
+async function getMaoyanVarietyHeat(params = {}) {
+  return getMaoyanBoard(params, 'variety');
 }
