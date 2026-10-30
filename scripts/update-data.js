@@ -3,7 +3,7 @@
  *
  * 用法：
  *   node scripts/update-data.js theater          生成悬疑剧场数据（data/theater-data.json）
- *   node scripts/update-data.js cinema           生成院线电影数据（data/cinema-movies.json）
+ *   node scripts/update-data.js cinema           生成影院热映数据（data/cinema-movies.json）
  *   node scripts/update-data.js maoyan           生成猫眼网播热度快照（data/maoyan-web-heat.json）
  *   node scripts/update-data.js all              依次生成以上三者
  *   node scripts/update-data.js validate <文件>  按共享契约校验已有数据文件
@@ -290,7 +290,7 @@ async function updateTheater() {
   });
 }
 
-// ---------- 院线电影（豆瓣榜单种子 + TMDB 严格匹配） ----------
+// ---------- 影院热映（豆瓣榜单种子 + TMDB 严格匹配） ----------
 
 // 分类：豆瓣端点 -> 输出字段
 const MOVIE_CATEGORIES = [
@@ -426,7 +426,7 @@ async function updateCinema() {
   });
 
   const total = MOVIE_CATEGORIES.reduce((sum, c) => sum + (data[c.key]?.length || 0), 0);
-  console.log(`院线电影有效数据总量：${total}`);
+  console.log(`影院热映有效数据总量：${total}`);
 }
 
 // ---------- 猫眼网播热度 ----------
@@ -675,7 +675,7 @@ async function main() {
     case 'all': {
       // 三组数据都尝试生成，任一失败则整轮失败（供工作流统一重试）
       const failures = [];
-      for (const [label, run] of [['悬疑剧场', updateTheater], ['院线电影', updateCinema], ['猫眼网播热度', updateMaoyan]]) {
+      for (const [label, run] of [['悬疑剧场', updateTheater], ['影院热映', updateCinema], ['猫眼网播热度', updateMaoyan]]) {
         try {
           await run();
         } catch (error) {

@@ -1,10 +1,10 @@
 var WidgetMetadata = {
   id: 'rex_widgets',
   title: 'RexWidgets',
-  description: '悬疑剧场 + 院线电影 + 网播热度 + 综艺热度，数据每日自动更新',
+  description: '悬疑剧场 + 影院热映 + 网播热度 + 综艺热度，数据每日自动更新',
   author: '两块',
   site: 'https://github.com/2kuai/RexWidgets',
-  version: '1.4.1',
+  version: '1.4.2',
   requiredVersion: '0.0.1',
   globalParams: [
     {
@@ -125,7 +125,7 @@ var WidgetMetadata = {
       ]
     },
     {
-      title: '院线电影',
+      title: '影院热映',
       functionName: 'getMovies',
       cacheDuration: 43200,
       params: [
@@ -230,7 +230,7 @@ async function getSuspenseTheater(params = {}) {
 }
 
 /**
- * 院线电影
+ * 影院热映
  * 数据由 GitHub Actions 每日以豆瓣榜单为种子 + TMDB 严格匹配生成，
  * 见 scripts/update-data.js（cinema）
  */
