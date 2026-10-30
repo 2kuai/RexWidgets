@@ -126,13 +126,13 @@ async function searchTMDB(title, year = null) {
     if (tmdbCache.has(cacheKey)) return tmdbCache.get(cacheKey);
 
     const promise = (async () => {
-        const params = { query: title, language: 'zh-CN' };
+        // TMDB_API_KEY 使用 v3 API Key（api_key 查询参数鉴权；v3 Key 不能用 Bearer）
+        const params = { query: title, language: 'zh-CN', api_key: TMDB_API_KEY };
         if (year) params.first_air_date_year = year;
 
         const response = await withRetry(`TMDB「${title}」`, () =>
             axios.get(TMDB_BASE_URL, {
                 params,
-                headers: { Authorization: `Bearer ${TMDB_API_KEY}` },
                 timeout: HTTP_TIMEOUT
             })
         );
