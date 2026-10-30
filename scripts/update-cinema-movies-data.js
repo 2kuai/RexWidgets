@@ -81,10 +81,10 @@ async function getStrictTMDBData(doubanItem) {
     const originalTitle = doubanItem.original_title;
     const searchQuery = originalTitle || title;
 
+    // TMDB_API_KEY 使用 v3 API Key（api_key 查询参数鉴权；v3 Key 不能用 Bearer）
     const searchRes = await withRetry(`TMDB「${title}」`, () =>
         axios.get('https://api.themoviedb.org/3/search/movie', {
-            params: { query: searchQuery, language: 'zh-CN' },
-            headers: { 'Authorization': `Bearer ${TMDB_API_KEY}` },
+            params: { query: searchQuery, language: 'zh-CN', api_key: TMDB_API_KEY },
             timeout: 10000
         })
     );
