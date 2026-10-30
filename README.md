@@ -49,10 +49,10 @@ rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/Widgets
 
 ### 首次启用需要配置（仓库所有者操作）
 
-工作流需要 TMDB API 读令牌。到本仓库 **Settings → Secrets and variables → Actions** 新增一个 secret：
+工作流需要 TMDB API 密钥。到本仓库 **Settings → Secrets and variables → Actions** 新增一个 secret：
 
 - Name：`TMDB_API_KEY`
-- Value：TMDB API Read Access Token（v4 令牌）
+- Value：TMDB API Key（v3 短格式密钥；脚本以 `api_key` 查询参数方式鉴权，不用 v4 长令牌）
 
 不配置的话工作流会直接报错退出，不会写坏已有数据。
 
