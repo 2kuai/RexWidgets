@@ -4,18 +4,23 @@
  * 用法：
  *   node scripts/update-data.js theater          生成悬疑剧场数据（data/theater-data.json）
  *   node scripts/update-data.js cinema           生成院线电影数据（data/cinema-movies.json）
- *   node scripts/update-data.js all              依次生成以上两者
+ *   node scripts/update-data.js maoyan           生成猫眼网播热度快照（data/maoyan-web-heat.json）
+ *   node scripts/update-data.js all              依次生成以上三者
  *   node scripts/update-data.js validate <文件>  按共享契约校验已有数据文件
  *
  * 环境变量：
  *   TMDB_API_KEY    TMDB v3 API Key（api_key 查询参数鉴权），theater / cinema 都需要
  *   DOUBAN_API_KEY  豆瓣 API Key，仅 cinema 需要
  *   BASE_URL        豆瓣 API 地址，可选，默认 https://api.douban.com/v2/movie
+ *   （maoyan 不需要密钥，但需要 Playwright 的 Chromium：npx playwright install chromium）
  *
  * 通用策略（两个数据源一致）：
  *   - TMDB 查询走并发池（5）+ 单条容错，单个条目失败只跳过计数，不拖垮整轮；
  *   - 单个分类 / 剧场整体失败时保留上一版数据，全部失败才让整轮失败；
  *   - 写盘前经 lib/data-contract.js 校验字段契约，校验不过不落盘。
+ *   - maoyan 例外：接口带 H5guard 签名校验，只能借 Playwright 页面内请求取数；
+ *     热度取明文字段 barValue（currHeat 是字体混淆的展示串，不用）；任一平台
+ *     榜单抓取失败整轮失败、保留上一版，写盘前按 validateMaoyanData 自校验。
  */
 import axios from 'axios';
 import * as cheerio from 'cheerio';
@@ -421,6 +426,121 @@ async function updateCinema() {
   console.log(`院线电影有效数据总量：${total}`);
 }
 
+// ---------- 猫眼网播热度 ----------
+
+const MAOYAN_DATA_FILE = path.join(DATA_DIR, 'maoyan-web-heat.json');
+const MAOYAN_PAGE_URL = 'https://piaofang.maoyan.com/i/dashboard/web-heat';
+const MAOYAN_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+
+// platformType 与猫眼前端 PLATFORM_NAME_LIST 一致；0=全网（请求时不传 platformType）
+const MAOYAN_PLATFORMS = [
+  { type: 0, key: 'all', name: '全网' },
+  { type: 1, key: 'youku', name: '优酷' },
+  { type: 2, key: 'iqiyi', name: '爱奇艺' },
+  { type: 3, key: 'tencent', name: '腾讯视频' },
+  { type: 4, key: 'letv', name: '乐视' },
+  { type: 5, key: 'sohu', name: '搜狐' },
+  { type: 6, key: 'pptv', name: 'PPTV' },
+  { type: 7, key: 'mgtv', name: '芒果TV' }
+];
+
+function shanghaiDateParts(date = new Date()) {
+  const formatted = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).format(date);
+  const [year, month, day] = formatted.split('-');
+  return { date: `${year}-${month}-${day}`, showDate: `${year}${month}${day}` };
+}
+
+function validateMaoyanData(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('猫眼热度数据不是对象，保留上一版。');
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(data.date || '')) {
+    throw new Error('猫眼热度数据缺少合法 date，保留上一版。');
+  }
+  if (!Array.isArray(data.boards) || data.boards.length !== MAOYAN_PLATFORMS.length) {
+    throw new Error(`猫眼热度应有 ${MAOYAN_PLATFORMS.length} 个榜单，实际 ${data.boards?.length}，保留上一版。`);
+  }
+  let total = 0;
+  for (const board of data.boards) {
+    if (!board || typeof board.platform !== 'string' || !Array.isArray(board.list) || board.list.length === 0) {
+      throw new Error(`猫眼热度「${board?.platform || '?'}」榜单为空，保留上一版。`);
+    }
+    for (const item of board.list) {
+      if (!item || typeof item.name !== 'string' || !item.name) {
+        throw new Error('猫眼热度条目缺少 name，保留上一版。');
+      }
+      if (typeof item.heat !== 'number' || !Number.isFinite(item.heat)) {
+        throw new Error(`猫眼热度「${item.name}」heat 非法，保留上一版。`);
+      }
+    }
+    total += board.list.length;
+  }
+  return total;
+}
+
+async function fetchMaoyanBoards() {
+  const { chromium } = await import('playwright');
+  const { showDate } = shanghaiDateParts();
+  const browser = await chromium.launch({ headless: true });
+  try {
+    const page = await browser.newPage({ userAgent: MAOYAN_UA, viewport: { width: 1600, height: 1000 } });
+    // 先挂响应等待再导航，等页面自身的首个 webHeatData 回来，确保 H5guard SDK 已初始化
+    const firstResponse = page.waitForResponse(
+      (resp) => resp.url().includes('/i/api/encrypt/dashboard/webHeatData') && resp.status() === 200,
+      { timeout: 60000 }
+    );
+    await page.goto(MAOYAN_PAGE_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await firstResponse;
+    return await page.evaluate(async ({ showDate, platforms }) => {
+      const meta = (name) => document.querySelector(`meta[name="${name}"]`)?.getAttribute('content');
+      const headers = { uid: meta('csrf'), uuid: meta('deviceId'), channelId: meta('channelId') };
+      const boards = [];
+      for (const platform of platforms) {
+        const suffix = platform.type === 0 ? '' : `&platformType=${platform.type}`;
+        const resp = await fetch(`/i/api/encrypt/dashboard/webHeatData?showDate=${showDate}${suffix}`, { headers });
+        if (!resp.ok) throw new Error(`猫眼 platformType=${platform.type} 返回 HTTP ${resp.status}`);
+        const json = await resp.json();
+        if (json?.status !== true) throw new Error(`猫眼 platformType=${platform.type} status 非 true`);
+        boards.push({ type: platform.type, list: json?.dataList?.list || [] });
+        await new Promise((resolve) => setTimeout(resolve, 300));
+      }
+      return boards;
+    }, { showDate, platforms: MAOYAN_PLATFORMS });
+  } finally {
+    await browser.close();
+  }
+}
+
+async function updateMaoyan() {
+  console.log('开始生成猫眼网播热度（电视剧+网络剧，8 个平台榜单）...');
+  const rawBoards = await fetchMaoyanBoards();
+  const { date } = shanghaiDateParts();
+  const boards = MAOYAN_PLATFORMS.map((platform) => {
+    const raw = rawBoards.find((board) => board.type === platform.type);
+    const list = (raw?.list || []).map((item, index) => ({
+      rank: index + 1,
+      seriesId: item.seriesInfo?.seriesId ?? null,
+      name: item.seriesInfo?.name ?? '',
+      // 热度取明文字段 barValue（currHeat 是字体混淆展示串）；保留两位小数与页面展示口径一致
+      heat: typeof item.barValue === 'number' ? Math.round(item.barValue * 100) / 100 : null,
+      platformDesc: item.seriesInfo?.platformDesc ?? '',
+      releaseInfo: item.seriesInfo?.releaseInfo ?? '',
+      newSeries: Boolean(item.seriesInfo?.newSeries)
+    }));
+    return { key: platform.key, platform: platform.name, platformType: platform.type, list };
+  });
+  const data = { date, updatedAt: new Date().toISOString(), source: MAOYAN_PAGE_URL, boards };
+  const total = validateMaoyanData(data);
+
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  const temporaryPath = path.join(DATA_DIR, `.${path.basename(MAOYAN_DATA_FILE)}.${process.pid}.tmp`);
+  fs.writeFileSync(temporaryPath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
+  fs.renameSync(temporaryPath, MAOYAN_DATA_FILE);
+  console.log(`[data] 猫眼网播热度：${MAOYAN_PLATFORMS.length} 个榜单共 ${total} 条，已写入 ${MAOYAN_DATA_FILE}。`);
+}
+
 // ---------- 入口 ----------
 
 function validateFiles(filePaths) {
@@ -429,8 +549,13 @@ function validateFiles(filePaths) {
   }
   for (const filePath of filePaths) {
     const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    const recordCount = validateData(data);
-    console.log(`[data] ${path.basename(filePath)}: ${recordCount} media records match the shared contract.`);
+    if (path.basename(filePath) === path.basename(MAOYAN_DATA_FILE)) {
+      const recordCount = validateMaoyanData(data);
+      console.log(`[data] ${path.basename(filePath)}: ${recordCount} heat records across ${data.boards.length} boards are valid.`);
+    } else {
+      const recordCount = validateData(data);
+      console.log(`[data] ${path.basename(filePath)}: ${recordCount} media records match the shared contract.`);
+    }
   }
 }
 
@@ -444,10 +569,13 @@ async function main() {
     case 'cinema':
       await updateCinema();
       break;
+    case 'maoyan':
+      await updateMaoyan();
+      break;
     case 'all': {
-      // 两组数据都尝试生成，任一失败则整轮失败（供工作流统一重试）
+      // 三组数据都尝试生成，任一失败则整轮失败（供工作流统一重试）
       const failures = [];
-      for (const [label, run] of [['悬疑剧场', updateTheater], ['院线电影', updateCinema]]) {
+      for (const [label, run] of [['悬疑剧场', updateTheater], ['院线电影', updateCinema], ['猫眼网播热度', updateMaoyan]]) {
         try {
           await run();
         } catch (error) {
@@ -464,7 +592,7 @@ async function main() {
       validateFiles(rest);
       break;
     default:
-      throw new Error('Usage: node scripts/update-data.js <theater|cinema|all|validate> [files...]');
+      throw new Error('Usage: node scripts/update-data.js <theater|cinema|maoyan|all|validate> [files...]');
   }
 }
 

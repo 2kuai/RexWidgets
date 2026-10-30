@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "axios": "1.8.4",
-    "cheerio": "1.0.0"
+    "cheerio": "1.0.0",
+    "playwright": "1.64.1"
   },
   "engines": {
     "node": ">=20 <21"
@@ -11,9 +12,10 @@
   "scripts": {
     "update": "node scripts/update-data.js all",
     "update:cinema": "node scripts/update-data.js cinema",
+    "update:maoyan": "node scripts/update-data.js maoyan",
     "update:theater": "node scripts/update-data.js theater",
     "validate": "node scripts/update-data.js validate"
   },
   "type": "module",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

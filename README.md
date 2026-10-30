@@ -28,8 +28,9 @@ widgets/                  Rex 模块（订阅入口）
 data/                     自动生成的数据（勿手改）
   theater-data.json       悬疑剧场数据
   cinema-movies.json      院线电影数据
+  maoyan-web-heat.json    猫眼网播热度每日快照（电视剧+网络剧，分平台）
 scripts/
-  update-data.js          数据生成统一入口（theater / cinema / all / validate）
+  update-data.js          数据生成统一入口（theater / cinema / maoyan / all / validate）
   lib/data-contract.js    生成数据的字段契约与写盘校验
 .github/workflows/
   update-data.yml         每日定时生成并提交数据
@@ -43,17 +44,18 @@ scripts/
 | --- | --- | --- | --- |
 | `theater` | 悬疑剧场 | 豆瓣豆列（迷雾 / 白夜 / X剧场）+ TMDB 精确匹配（片名全等 + 年份） | `data/theater-data.json` |
 | `cinema` | 院线电影 | 豆瓣榜单（in_theaters / coming_soon）为种子 + TMDB 严格匹配（片名或原名全等才收录） | `data/cinema-movies.json` |
-| `all` | 两者依次生成 | 同上 | 同上 |
-| `validate <文件>` | — | 按 `scripts/lib/data-contract.js` 的共享契约校验已有数据文件 | — |
+| `maoyan` | 猫眼网播热度 | 猫眼专业版网播热度大屏（电视剧+网络剧，全网 + 优酷 / 爱奇艺 / 腾讯视频 / 乐视 / 搜狐 / PPTV / 芒果TV）；接口带 H5guard 签名校验，用 Playwright 无头浏览器在页面内发请求取数 | `data/maoyan-web-heat.json` |
+| `all` | 三者依次生成 | 同上 | 同上 |
+| `validate <文件>` | — | 按 `scripts/lib/data-contract.js` 的共享契约校验已有数据文件（猫眼热度文件按其自身结构校验） | — |
 
-生成策略：TMDB 查询并发池 + 单条容错；单个剧场 / 分类整体失败时保留上一版数据，全部失败才整轮失败；写盘前先过契约校验，校验不过不落盘。
+生成策略：TMDB 查询并发池 + 单条容错；单个剧场 / 分类整体失败时保留上一版数据，全部失败才整轮失败；写盘前先过契约校验，校验不过不落盘。猫眼热度为每日覆盖的当日快照，历史靠 git 提交记录归档；任一平台抓取失败整轮失败、保留上一版。
 
 工作流 `.github/workflows/update-data.yml`（失败自动重试 3 次，数据有变化才提交）：
 
-- 每天 04:00 UTC 自动生成悬疑剧场，18:00 UTC 自动生成院线电影；
-- 也可在 Actions 页面手动触发 “Update Widget Data”，用 `target` 参数选 `all` / `theater` / `cinema`。
+- 每天 04:00 UTC 自动生成悬疑剧场，18:00 UTC 自动生成院线电影，15:50 UTC（北京时间 23:50）自动生成猫眼网播热度；
+- 也可在 Actions 页面手动触发 “Update Widget Data”，用 `target` 参数选 `all` / `theater` / `cinema` / `maoyan`。
 
-本地运行：`npm run update`（全部）、`npm run update:theater`、`npm run update:cinema`、`npm run validate -- data/theater-data.json`。
+本地运行：`npm run update`（全部）、`npm run update:theater`、`npm run update:cinema`、`npm run update:maoyan`（需先 `npx playwright install chromium`）、`npm run validate -- data/theater-data.json`。
 
 ### 首次启用需要配置（仓库所有者操作）
 
