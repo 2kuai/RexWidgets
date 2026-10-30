@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-30T10:16:52.563Z",
+  "updated_at": "2026-10-30T12:46:51.706Z",
   "now_playing": [
     {
       "id": 1801027,
@@ -10,8 +10,8 @@
       "voteCount": 0,
       "popularity": 0.5947,
       "releaseDate": "2025",
-      "posterPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2935834896.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2935834896.jpg",
+      "posterPath": "",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": ""
     },
@@ -95,7 +95,7 @@
       "popularity": 3.9016,
       "releaseDate": "2026-10-23",
       "posterPath": "/xQPBgH87jTfXXUOAhHdrQ4H2SyS.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2936706806.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "剧情,犯罪,惊悚"
     },
@@ -132,8 +132,8 @@
       "type": "tmdb",
       "title": "野兽之心",
       "description": "一名前陆军特种部队士兵与他退役战犬在阿拉斯加深处遭遇坠机事故后，这对老搭档必须在环境严酷的极地荒野中相互扶持，为生存而战。",
-      "rating": 7.3,
-      "voteCount": 364,
+      "rating": 7.323,
+      "voteCount": 365,
       "popularity": 81.1322,
       "releaseDate": "2026-09-19",
       "posterPath": "/k1nznc9xTRkRq0BNu7qOXE3NSlU.jpg",
@@ -193,7 +193,7 @@
       "popularity": 4.8545,
       "releaseDate": "2026-10-03",
       "posterPath": "/b64Qih8RALtpxQcuFnsJOOSoIBT.jpg",
-      "backdropPath": "https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2936087801.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "剧情,动作,犯罪"
     },
@@ -287,7 +287,7 @@
       "title": "痴迷",
       "description": "一个渴望爱情的浪漫主义者打破神秘的“许愿柳”，希望赢得心仪之人的芳心。当愿望如愿实现，他却发现，有些欲望背后隐藏着黑暗而可怕的代价。",
       "rating": 8.168,
-      "voteCount": 6407,
+      "voteCount": 6410,
       "popularity": 104.2996,
       "releaseDate": "2026-05-13",
       "posterPath": "/32HbiLe4AWBqsM7WrYEYpL3oHmS.jpg",
@@ -571,7 +571,7 @@
       "popularity": 1.0352,
       "releaseDate": "2026-10-01",
       "posterPath": "/nQhGByf1SEhmMNrwirvjzBVOxXn.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2936098875.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "动画,奇幻"
     },
@@ -655,7 +655,7 @@
       "popularity": 0.4349,
       "releaseDate": "2026-10-15",
       "posterPath": "/lGP8KoWy1IAzmJ3I9mH8KxQq7p9.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2928014044.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "纪录"
     },
@@ -725,7 +725,7 @@
       "popularity": 0.5111,
       "releaseDate": "2026-10-15",
       "posterPath": "/66gSAoE0Ne1faHY7lNALKmMJynd.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2935221014.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "纪录"
     },
@@ -767,7 +767,7 @@
       "popularity": 1.2518,
       "releaseDate": "2019-02-15",
       "posterPath": "/afV7qZCZADQJe10JeUjBcpYvkCZ.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2935337748.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "纪录"
     },
@@ -837,7 +837,7 @@
       "popularity": 1.7358,
       "releaseDate": "2026-09-07",
       "posterPath": "/qlxd2aIBxgTV7PnhMbFTewLrPje.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2935383503.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "剧情"
     },
@@ -893,7 +893,7 @@
       "popularity": 0.8708,
       "releaseDate": "2017-04-21",
       "posterPath": "/iQuk3dJMp3lmpw7yb0JySL7Z6m1.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2456564275.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": ""
     },
@@ -907,7 +907,7 @@
       "popularity": 0.7192,
       "releaseDate": "2015-04-23",
       "posterPath": "/kFkNRCRjZVvLCJyh2xvuJvgXUay.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2241064475.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": ""
     },
@@ -921,7 +921,7 @@
       "popularity": 0.4457,
       "releaseDate": "2017-04-21",
       "posterPath": "/5zPq9KLq367E8WZFgltKM8N7urk.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2456564393.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "电视电影"
     },
@@ -949,7 +949,7 @@
       "popularity": 0.815,
       "releaseDate": "2015-04-23",
       "posterPath": "/uh55Z5N8NflRda9skAvEMmUwImP.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2241064547.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": ""
     },
@@ -963,7 +963,7 @@
       "popularity": 1.1349,
       "releaseDate": "2023-11-05",
       "posterPath": "/dv0xrhChaOlVUAYtnJElTJDMsFP.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2903736487.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "纪录"
     }
@@ -979,7 +979,7 @@
       "popularity": 1.7572,
       "releaseDate": "2026-10-31",
       "posterPath": "/gsqSXMD1PNRq27bma8CUHrJvC3A.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2937022135.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "惊悚"
     },
@@ -1049,7 +1049,7 @@
       "popularity": 0.7913,
       "releaseDate": "2026",
       "posterPath": "/3hFpq6l1FTMo3OqyeE3W0aK6fHR.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2934491910.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "剧情"
     },
@@ -1105,7 +1105,7 @@
       "popularity": 0.7569,
       "releaseDate": "2026-11-08",
       "posterPath": "/ui6KVXPZ45rA1fkr9DycU4khQi6.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2937052567.jpg",
+      "backdropPath": "/lr9MwG2e8YEYW0aLeF8ImRKTPp3.jpg",
       "mediaType": "movie",
       "genreTitle": "剧情"
     },
@@ -1147,7 +1147,7 @@
       "popularity": 1.4421,
       "releaseDate": "2026-11-21",
       "posterPath": "/dGj9WLTLL8xA1jlEo5RmhProV7G.jpg",
-      "backdropPath": "https://img9.doubanio.com/view/photo/s_ratio_poster/public/p2936965976.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "剧情,悬疑,惊悚"
     },
@@ -1217,7 +1217,7 @@
       "popularity": 2.0157,
       "releaseDate": "2026-12-31",
       "posterPath": "/3apeYCnkOcYabQZlygwPzP2MO26.jpg",
-      "backdropPath": "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2936056618.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "剧情,爱情"
     },
@@ -1245,7 +1245,7 @@
       "popularity": 0.4392,
       "releaseDate": "2027-03-08",
       "posterPath": "/r7MVwtPRgYuZYDsFZhfeV8YmrA0.jpg",
-      "backdropPath": "https://img2.doubanio.com/view/photo/s_ratio_poster/public/p2936039401.jpg",
+      "backdropPath": "",
       "mediaType": "movie",
       "genreTitle": "纪录"
     }
