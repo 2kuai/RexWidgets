@@ -4,32 +4,27 @@ Rex 播放器 Widget 模块仓库。模块数据由 GitHub Actions 每日自动�
 
 ## 模块
 
+只有一个模块文件 `widgets/rex-widgets.js`，内含下面两个模块，一次订阅全部到手：
+
+```
+rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/rex-widgets.js
+```
+
+原始地址：`https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/rex-widgets.js`
+
 ### 悬疑剧场
 
 迷雾剧场 / 白夜剧场 / X剧场 悬疑剧集精选，可按「正在热播 / 即将上线」和剧场筛选，支持热度、发布时间、评分排序。
-
-```
-rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/suspense-theater.js
-```
-
-原始地址：`https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/suspense-theater.js`
 
 ### 院线电影
 
 正在热映 / 即将上映，可切换分类，支持热度、发布时间、评分排序。
 
-```
-rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/cinema-movies.js
-```
-
-原始地址：`https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets/cinema-movies.js`
-
 ## 仓库结构
 
 ```
 widgets/                  Rex 模块（订阅入口）
-  suspense-theater.js     悬疑剧场
-  cinema-movies.js        院线电影
+  rex-widgets.js          全部模块（悬疑剧场 + 院线电影）
 data/                     自动生成的数据（勿手改）
   theater-data.json       悬疑剧场数据
   cinema-movies.json      院线电影数据
