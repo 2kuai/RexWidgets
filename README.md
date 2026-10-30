@@ -18,7 +18,7 @@ rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/widgets
 
 ### 网播热度
 
-猫眼网播热度榜（电视剧+网络剧），可按全网 / 优酷 / 爱奇艺 / 腾讯视频 / 乐视 / 搜狐 / PPTV / 芒果TV 切换榜单，默认按榜单名次（热度）排列，支持发布时间、评分排序。
+猫眼网播热度榜，可先选类别（电视剧+网络剧 / 综艺），再按全网 / 优酷 / 爱奇艺 / 腾讯视频 / 乐视 / 搜狐 / PPTV / 芒果TV 切换榜单，默认按榜单名次（热度）排列，支持发布时间、评分排序。
 
 ### 院线电影
 
@@ -32,7 +32,7 @@ widgets/                  Rex 模块（订阅入口）
 data/                     自动生成的数据（勿手改）
   theater-data.json       悬疑剧场数据
   cinema-movies.json      院线电影数据
-  maoyan-web-heat.json    猫眼网播热度（电视剧+网络剧，分平台榜单，统一契约格式）
+  maoyan-web-heat.json    猫眼网播热度（剧集 / 综艺 × 分平台榜单，统一契约格式）
 scripts/
   update-data.js          数据生成统一入口（theater / cinema / maoyan / all / validate）
   lib/data-contract.js    生成数据的字段契约与写盘校验
@@ -48,7 +48,7 @@ scripts/
 | --- | --- | --- | --- |
 | `theater` | 悬疑剧场 | 豆瓣豆列（迷雾 / 白夜 / X剧场）+ TMDB 精确匹配（片名全等 + 年份） | `data/theater-data.json` |
 | `cinema` | 院线电影 | 豆瓣榜单（in_theaters / coming_soon）为种子 + TMDB 严格匹配（片名或原名全等才收录） | `data/cinema-movies.json` |
-| `maoyan` | 猫眼网播热度 | 猫眼网播热度榜（电视剧+网络剧，全网 + 优酷 / 爱奇艺 / 腾讯视频 / 乐视 / 搜狐 / PPTV / 芒果TV）为种子 + TMDB 精确匹配（片名全等才收录）；接口带 H5guard 签名校验，用 Playwright 无头浏览器在页面内发请求取榜，热度写入 `popularity` 并另存 `heat` 字段 | `data/maoyan-web-heat.json` |
+| `maoyan` | 猫眼网播热度 | 猫眼网播热度榜（电视剧+网络剧 / 综艺两类，各含全网 + 优酷 / 爱奇艺 / 腾讯视频 / 乐视 / 搜狐 / PPTV / 芒果TV 共 16 个榜单）为种子 + TMDB 精确匹配（片名全等才收录）；接口带 H5guard 签名校验，用 Playwright 无头浏览器在页面内发请求取榜，热度写入 `popularity` 并另存 `heat` 字段 | `data/maoyan-web-heat.json` |
 | `all` | 三者依次生成 | 同上 | 同上 |
 | `validate <文件>` | — | 按 `scripts/lib/data-contract.js` 的共享契约校验已有数据文件 | — |
 

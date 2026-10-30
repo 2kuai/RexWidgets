@@ -18,7 +18,7 @@
  *   - TMDB 查询走并发池（5）+ 单条容错，单个条目失败只跳过计数，不拖垮整轮；
  *   - 单个分类 / 剧场整体失败时保留上一版数据，全部失败才让整轮失败；
  *   - 写盘前经 lib/data-contract.js 校验字段契约，校验不过不落盘。
- *   - maoyan 的种子来自猫眼网播热度榜：接口带 H5guard 签名校验，只能借
+ *   - maoyan 的种子来自猫眼网播热度榜（剧集 / 综艺两类）：接口带 H5guard 签名校验，只能借
  *     Playwright 页面内请求取数；热度取明文字段 barValue（currHeat 是字体
  *     混淆的展示串，不用），写入统一契约的 popularity 并另存 heat 字段；
  *     单个榜单整体失败时保留上一版该榜单，全部失败才让整轮失败。
@@ -433,6 +433,12 @@ const MAOYAN_DATA_FILE = path.join(DATA_DIR, 'maoyan-web-heat.json');
 const MAOYAN_PAGE_URL = 'https://piaofang.maoyan.com/i/dashboard/web-heat';
 const MAOYAN_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
 
+// seriesType 与猫眼前端 TITLE_TAB 一致；null 表示不传（默认 -1=电视剧+网络剧）
+const MAOYAN_CATEGORIES = [
+  { key: 'tv', name: '电视剧+网络剧', seriesType: null },
+  { key: 'variety', name: '综艺', seriesType: 2 }
+];
+
 // platformType 与猫眼前端 PLATFORM_NAME_LIST 一致；0=全网（请求时不传 platformType）
 const MAOYAN_PLATFORMS = [
   { type: 0, key: 'all', name: '全网' },
@@ -498,21 +504,32 @@ async function fetchMaoyanBoards() {
     );
     await page.goto(MAOYAN_PAGE_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await firstResponse;
-    return await page.evaluate(async ({ showDate, platforms }) => {
+    return await page.evaluate(async ({ showDate, categories, platforms }) => {
       const meta = (name) => document.querySelector(`meta[name="${name}"]`)?.getAttribute('content');
       const headers = { uid: meta('csrf'), uuid: meta('deviceId'), channelId: meta('channelId') };
       const boards = [];
-      for (const platform of platforms) {
-        const suffix = platform.type === 0 ? '' : `&platformType=${platform.type}`;
-        const resp = await fetch(`/i/api/encrypt/dashboard/webHeatData?showDate=${showDate}${suffix}`, { headers });
-        if (!resp.ok) throw new Error(`猫眼 platformType=${platform.type} 返回 HTTP ${resp.status}`);
-        const json = await resp.json();
-        if (json?.status !== true) throw new Error(`猫眼 platformType=${platform.type} status 非 true`);
-        boards.push({ type: platform.type, list: json?.dataList?.list || [] });
-        await new Promise((resolve) => setTimeout(resolve, 300));
+      for (const category of categories) {
+        for (const platform of platforms) {
+          const parts = [`showDate=${showDate}`];
+          if (category.seriesType !== null) parts.push(`seriesType=${category.seriesType}`);
+          if (platform.type !== 0) parts.push(`platformType=${platform.type}`);
+          let list = null;
+          try {
+            const resp = await fetch(`/i/api/encrypt/dashboard/webHeatData?${parts.join('&')}`, { headers });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const json = await resp.json();
+            if (json?.status !== true) throw new Error('status 非 true');
+            list = json?.dataList?.list || [];
+          } catch (error) {
+            // 单榜失败不拖垮整轮：list=null 交由上层回退上一版
+            console.warn(`猫眼 ${category.key}/platformType=${platform.type} 抓取失败：${error.message}`);
+          }
+          boards.push({ category: category.key, type: platform.type, list });
+          await new Promise((resolve) => setTimeout(resolve, 300));
+        }
       }
       return boards;
-    }, { showDate, platforms: MAOYAN_PLATFORMS });
+    }, { showDate, categories: MAOYAN_CATEGORIES, platforms: MAOYAN_PLATFORMS });
   } finally {
     await browser.close();
   }
@@ -523,7 +540,7 @@ async function updateMaoyan() {
     throw new Error('TMDB_API_KEY environment variable is required.');
   }
 
-  console.log('开始生成猫眼网播热度（电视剧+网络剧，8 个平台榜单）...');
+  console.log('开始生成猫眼网播热度（电视剧+网络剧 / 综艺，16 个平台榜单）...');
   const previous = readPrevious(MAOYAN_DATA_FILE);
   const rawBoards = await fetchMaoyanBoards();
   const data = {
@@ -532,24 +549,31 @@ async function updateMaoyan() {
 
   // 单个榜单整体失败时保留上一版该榜单数据；全部失败才让整轮失败
   let successCount = 0;
-  for (const platform of MAOYAN_PLATFORMS) {
-    const raw = rawBoards.find((board) => board.type === platform.type);
-    try {
-      if (!raw || !Array.isArray(raw.list) || raw.list.length === 0) {
-        throw new Error('榜单为空');
-      }
-      const list = await buildMaoyanBoard(platform, raw.list);
-      if (list.length === 0) {
-        throw new Error('TMDB 全部未匹配');
-      }
-      data[platform.key] = list;
-      successCount++;
-      console.log(`${platform.name}：榜单 ${raw.list.length} 条，TMDB 匹配 ${list.length} 条`);
-    } catch (error) {
-      console.error(`${platform.name} 更新失败：${error.message}`);
-      if (Array.isArray(previous?.[platform.key]) && previous[platform.key].length > 0) {
-        console.warn(`${platform.name}：保留上一版数据`);
-        data[platform.key] = previous[platform.key];
+  for (const category of MAOYAN_CATEGORIES) {
+    data[category.key] = {};
+    for (const platform of MAOYAN_PLATFORMS) {
+      const label = `${category.name}·${platform.name}`;
+      const raw = rawBoards.find((board) => board.category === category.key && board.type === platform.type);
+      try {
+        if (!raw || !Array.isArray(raw.list) || raw.list.length === 0) {
+          throw new Error('榜单为空或抓取失败');
+        }
+        const list = await buildMaoyanBoard({ ...platform, name: label }, raw.list);
+        if (list.length === 0) {
+          throw new Error('TMDB 全部未匹配');
+        }
+        data[category.key][platform.key] = list;
+        successCount++;
+        console.log(`${label}：榜单 ${raw.list.length} 条，TMDB 匹配 ${list.length} 条`);
+      } catch (error) {
+        console.error(`${label} 更新失败：${error.message}`);
+        // 上一版嵌套结构按 [类别][平台] 取；旧版扁平结构只有剧集榜，按平台键兜底
+        const prevList = previous?.[category.key]?.[platform.key]
+          ?? (category.key === 'tv' ? previous?.[platform.key] : undefined);
+        if (Array.isArray(prevList) && prevList.length > 0) {
+          console.warn(`${label}：保留上一版数据`);
+          data[category.key][platform.key] = prevList;
+        }
       }
     }
   }
@@ -559,7 +583,7 @@ async function updateMaoyan() {
 
   writeValidatedJson(MAOYAN_DATA_FILE, data, {
     label: 'Maoyan web heat boards',
-    requiredCollections: [['all']]
+    requiredCollections: [['tv', 'all'], ['variety', 'all']]
   });
 }
 

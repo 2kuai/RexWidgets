@@ -4,7 +4,7 @@ var WidgetMetadata = {
   description: '悬疑剧场 + 院线电影 + 网播热度，数据每日自动更新',
   author: '两块',
   site: 'https://github.com/2kuai/RexWidgets',
-  version: '1.1.0',
+  version: '1.2.0',
   requiredVersion: '0.0.1',
   globalParams: [
     {
@@ -60,6 +60,15 @@ var WidgetMetadata = {
       functionName: 'getMaoyanHeat',
       cacheDuration: 43200,
       params: [
+        {
+          name: 'category',
+          title: '类别',
+          type: 'enumeration',
+          enumOptions: [
+            { title: '电视剧+网络剧', value: 'tv' },
+            { title: '综艺', value: 'variety' }
+          ]
+        },
         {
           name: 'platform',
           title: '平台',
@@ -202,13 +211,14 @@ async function getMovies(params = {}) {
 
 /**
  * 网播热度
- * 数据由 GitHub Actions 每日以猫眼网播热度榜（电视剧+网络剧）为种子 + TMDB 精确匹配生成，
+ * 数据由 GitHub Actions 每日以猫眼网播热度榜（电视剧+网络剧 / 综艺）为种子 + TMDB 精确匹配生成，
  * 见 scripts/update-data.js（maoyan）。默认顺序即榜单名次（热度写入 popularity）
  */
 async function getMaoyanHeat(params = {}) {
   const data = await Utils.fetchData(params.githubProxy, MAOYAN_DATA_URL);
   if (!data) return Utils.emptyTips;
 
-  const list = data[params.platform || 'all'] || [];
+  const boards = data[params.category || 'tv'] || {};
+  const list = boards[params.platform || 'all'] || [];
   return Utils.sortList(list, params.sort_by);
 }
