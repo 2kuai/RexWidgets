@@ -2,14 +2,6 @@
 
 Rex 播放器 Widget 模块仓库。模块数据由 GitHub Actions 每日自动生成，订阅后随仓库自动更新。
 
-## 模块合集（一键订阅全部）
-
-```
-rex://widget?url=https://raw.githubusercontent.com/2kuai/RexWidgets/main/collection.rex
-```
-
-合集文件 `collection.rex` 包含下面全部模块，在 Rex 中打开上面的链接即可一次添加。
-
 ## 模块
 
 ### 悬疑剧场
@@ -46,7 +38,6 @@ scripts/
   lib/data-contract.js    生成数据的字段契约与写盘校验
 .github/workflows/
   update-data.yml         每日定时生成并提交数据
-collection.rex            模块合集订阅文件
 ```
 
 ## 数据自动化
